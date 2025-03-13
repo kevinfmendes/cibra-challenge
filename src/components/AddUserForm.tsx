@@ -1,8 +1,11 @@
+// components/AddUserForm.tsx
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Dialog from '@radix-ui/react-dialog';
 import { User } from '@/types/User';
 import Toast from './Toast';
+import Input from './InputForm'; // Importe o componente Input
+import InputForm from './InputForm';
 
 interface AddUserFormProps {
   onAddUser: (user: Omit<User, 'id'>) => void;
@@ -43,6 +46,12 @@ const AddUserForm: React.FC<AddUserFormProps> = ({ onAddUser }) => {
       username: data.username,
       email: data.email,
       phone: data.phone,
+      website: data.website,
+      company: {
+        name: '',
+        catchPhrase: '',
+        bs: '',
+      },
       address: {
         street: data.street,
         city: data.city,
@@ -63,9 +72,7 @@ const AddUserForm: React.FC<AddUserFormProps> = ({ onAddUser }) => {
     <>
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Trigger asChild>
-          <button className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700
-           text-white w-14 h-14 rounded-full flex items-center justify-center
-            shadow-lg">
+          <button className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-7 w-7"
@@ -85,22 +92,18 @@ const AddUserForm: React.FC<AddUserFormProps> = ({ onAddUser }) => {
 
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/50 dark:bg-black/70" />
-          <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2
-           -translate-y-1/2 bg-white dark:bg-gray-800 rounded-lg p-6 shadow-xl 
-           max-w-md w-full max-h-[90vh] overflow-y-auto">
+          <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 rounded-lg p-6 shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
             <Dialog.Title className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
               Adicionar Novo Usuário
             </Dialog.Title>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="mb-6 flex flex-col items-center dark:bg-gray-800">
-                <div className="w-24 h-24 rounded-full overflow-hidden
-                 bg-gray-200 dark:bg-gray-700 mb-3">
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 mb-3">
                   {avatarPreview ? (
                     <img src={avatarPreview} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center 
-                    justify-center text-gray-500 dark:text-gray-400">
+                    <div className="w-full h-full flex items-center justify-center text-gray-500 dark:text-gray-400">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-12 w-12"
@@ -123,132 +126,55 @@ const AddUserForm: React.FC<AddUserFormProps> = ({ onAddUser }) => {
                   <input
                     type="file"
                     accept="image/*"
-                    className="block w-full text-sm text-slate-500
-                      file:mr-4 file:py-2 file:px-4
-                      file:rounded-full file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-blue-50 file:text-blue-700
-                      dark:file:text-blue-400
-                      hover:file:bg-blue-100 dark:hover:file:bg-blue-900/30
-                    "
+                    className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
+                      file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 dark:file:text-blue-400 hover:file:bg-blue-100 dark:hover:file:bg-blue-900/30"
                     onChange={handleFileChange}
                   />
                 </label>
               </div>
 
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium 
-                text-gray-700 dark:text-gray-300 mb-1">
-                  Nome completo*
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  {...register('name', { required: 'Nome é obrigatório' })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md
-                   focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                />
-                {errors.name && (
-                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name.message}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="username" className="block text-sm font-medium
-                 text-gray-700 dark:text-gray-300 mb-1">
-                  Nome de usuário*
-                </label>
-                <input
-                  id="username"
-                  type="text"
-                  {...register('username', { required: 'Nome de usuário é obrigatório' })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
-                   rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                />
-                {errors.username && (
-                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.username.message}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium
-                 text-gray-700 dark:text-gray-300 mb-1">
-                  Email*
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  {...register('email', {
-                    required: 'Email é obrigatório',
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Email inválido',
-                    },
-                  })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
-                   rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="phone" className="block text-sm font-medium
-                 text-gray-700 dark:text-gray-300 mb-1">
-                  Telefone
-                </label>
-                <input
-                  id="phone"
-                  type="text"
-                  {...register('phone')}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
-                   rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                />
-              </div>
-              <div>
-                <label htmlFor="zipcode" className="block text-sm font-medium
-                 text-gray-700 dark:text-gray-300 mb-1">
-                  Cep
-                </label>
-                <input
-                  id="zipcode"
-                  type="text"
-                  {...register('zipcode')}
-                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
-                   rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="street" className="block text-sm font-medium
-                   text-gray-700 dark:text-gray-300 mb-1">
-                    Rua
-                  </label>
-                  <input
-                    id="street"
-                    type="text"
-                    {...register('street')}
-                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
-                   rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="city" className="block text-sm font-medium
-                   text-gray-700 dark:text-gray-300 mb-1">
-                    Cidade
-                  </label>
-                  <input
-                    id="city"
-                    type="text"
-                    {...register('city')}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600
-                   rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                  />
-                </div>
-              </div>
+              <InputForm
+                id="name"
+                label="Nome completo"
+                register={register}
+                errors={errors.name}
+                required
+              />
+              <InputForm
+                id="username"
+                label="Nome de usuário"
+                register={register}
+                errors={errors.username}
+                required
+              />
+              <InputForm
+                id="email"
+                label="Email"
+                type="email"
+                register={register}
+                errors={errors.email}
+                required
+              />
+              <InputForm
+                id="phone"
+                label="Telefone"
+                register={register}
+              />
+              <InputForm
+                id="zipcode"
+                label="Cep"
+                register={register}
+              />
+              <InputForm
+                id="street"
+                label="Rua"
+                register={register}
+              />
+              <InputForm
+                id="city"
+                label="Cidade"
+                register={register}
+              />
 
               <div className="flex justify-end gap-3 pt-4">
                 <Dialog.Close asChild>

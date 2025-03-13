@@ -10,10 +10,11 @@ const ThemeToggle = () => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
       setDarkMode(true);
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
     } else {
-      setDarkMode(false);
-      document.documentElement.classList.remove('dark');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setDarkMode(prefersDark);
+      document.documentElement.classList.toggle('dark', prefersDark);
     }
   }, []);
 
@@ -21,13 +22,9 @@ const ThemeToggle = () => {
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
-    if (newDarkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
+
+    document.documentElement.classList.toggle('dark', newDarkMode);
+    localStorage.setItem('theme', newDarkMode ? 'dark' : 'light');
   };
 
   return (

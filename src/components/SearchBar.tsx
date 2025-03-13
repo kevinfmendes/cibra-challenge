@@ -15,7 +15,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchTerm, setSearchTerm }) => {
         placeholder="Buscar usuários..."
         className="w-full p-3 pl-10 text-sm border
          border-gray-300 rounded-lg focus:outline-none
-          focus:ring-2 focus:ring-blue-500 dark:text-white bg-transparent"
+          focus:ring-2 focus:ring-blue-500 text-gray-800 dark:text-white bg-transparent"
       />
       <svg
         className="absolute left-3 top-3.5 h-4 w-4 text-gray-400"

@@ -4,16 +4,21 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #040408;
+  --customTextColor: red
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
-    --foreground: #010001;
+    --foreground: #fafaff;
+    --customTextColor:green
   }
 }
 
+p{
+  color: var(--customTextColor); /* Usa a variável --customTextColor definida no :root */
+}
 body {
   background: var(--background);
   color: var(--foreground);
@@ -26,5 +31,5 @@ input {
 }
 
 input::placeholder {
-  color: #656769; /* Cor do placeholder */
+  color: var(--foreground); /* Cor do placeholder */
 }
