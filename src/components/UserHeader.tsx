@@ -1,15 +1,28 @@
-import React from 'react';
+import { FiEdit } from 'react-icons/fi';
 
 interface UserHeaderProps {
   name: string;
   username: string;
   email: string;
+  isEditable?: boolean;
+  onEditClick?: () => void;
 }
 
-const UserHeader: React.FC<UserHeaderProps> = ({ name, username, email }) => {
+const UserHeader: React.FC<UserHeaderProps> = ({ name, username, email, isEditable = false, onEditClick }) => {
   return (
     <div className="text-center sm:text-left">
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">{name}</h1>
+      <div className='flex gap-2'>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">{name}</h1>
+        {isEditable && (
+            <button
+              onClick={onEditClick}
+              className="p-2 text-gray-600 dark:text-blue-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-full hover:bg-blue-50 dark:hover:bg-blue-400/10 transition-colors absolute top-0 right-0 sm:static"
+              aria-label="Editar usuário"
+            >
+              <FiEdit className="h-5 w-5" size={70} />
+            </button>
+          )}
+      </div>
       <p className="text-lg text-gray-600 dark:text-gray-300 mb-1">@{username}</p>
       <p className="text-gray-600 dark:text-gray-300 flex items-center justify-center sm:justify-start">
         <svg

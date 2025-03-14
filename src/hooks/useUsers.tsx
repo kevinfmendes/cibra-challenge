@@ -13,13 +13,11 @@ export function useUsers () {
     const loadUsers = async () => {
       try {
         const apiUsers = await fetchUsers();
-        // Inicializa o localStorage se estiver vazio
         const initialUsers = initializeStorage(apiUsers);
         setUsers(initialUsers);
         setFilteredUsers(initialUsers);
       } catch (error) {
         console.error('Erro ao carregar usuários:', error);
-        // Tenta carregar do localStorage caso a API falhe
         const storedUsers = getUsers();
         setUsers(storedUsers);
         setFilteredUsers(storedUsers);
@@ -56,6 +54,14 @@ export function useUsers () {
     saveUsers(updatedUsers);
   };
 
+  function updateUser(updatedUser: User): void {
+    const updatedUsers = users.map(user => 
+      user.id === updatedUser.id ? updatedUser : user
+    );
+    setUsers(updatedUsers);
+    saveUsers(updatedUsers);
+  };
+
   const deleteUser = (id: number): void => {
     const updatedUsers = users.filter(user => user.id !== id);
     setUsers(updatedUsers);
@@ -70,6 +76,7 @@ export function useUsers () {
     users: filteredUsers,
     loading,
     addUser,
+    updateUser,
     deleteUser,
     getUserById,
     searchTerm,

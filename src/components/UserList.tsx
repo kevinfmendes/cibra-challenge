@@ -5,10 +5,11 @@ import UserCard from './UserCard';
 interface UserListProps {
   users: User[];
   onDelete: (id: number) => void;
+  onUpdateUser: (user: User) => void;
   loading: boolean;
 }
 
-const UserList: React.FC<UserListProps> = ({ users, onDelete, loading }) => {
+const UserList: React.FC<UserListProps> = ({ users, onDelete, onUpdateUser, loading }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
@@ -42,7 +43,11 @@ const UserList: React.FC<UserListProps> = ({ users, onDelete, loading }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {users.map((user) => (
-        <UserCard key={user.id} user={user} onDelete={onDelete} />
+        <UserCard 
+          key={user.id}
+          user={user}
+          onDelete={onDelete}
+          onUpdateUser={onUpdateUser} />
       ))}
     </div>
   );

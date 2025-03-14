@@ -3,13 +3,15 @@ import Link from 'next/link';
 import * as Avatar from '@radix-ui/react-avatar';
 import { User } from '@/types/User';
 import DeleteUserButton from './DeleteUserButton';
+import UpdateUserButton from './UpdateUserButton';
 
 interface UserCardProps {
   user: User;
   onDelete: (id: number) => void;
+  onUpdateUser: (user: User) => void;
 }
 
-const UserCard: React.FC<UserCardProps> = ({ user, onDelete }) => {
+const UserCard: React.FC<UserCardProps> = ({ user, onDelete, onUpdateUser }) => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-transform hover:scale-[1.02]">
       <div className="p-4">
@@ -26,8 +28,12 @@ const UserCard: React.FC<UserCardProps> = ({ user, onDelete }) => {
               {user.name.substring(0, 2).toUpperCase()}
             </Avatar.Fallback>
           </Avatar.Root>
-          
+          <div className='flex gap-2'>
+
+          <UpdateUserButton user={user} onUpdateUser={onUpdateUser} />
+
           <DeleteUserButton onDelete={() => onDelete(user.id)} />
+          </div>
         </div>
         
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-1 truncate">{user.name}</h3>
