@@ -1,7 +1,4 @@
-# cibra-challenge
-
-# Desafio Frontend Cibra - Gerenciamento de Usuários
-Projeto desenvolvido como parte do desafio técnico para a vaga de desenvolvedor front-end na Cibra.
+# cibra-user-handler
 
 💻 Sobre o projeto
 Esta aplicação é um sistema de gerenciamento de usuários que consome dados da API JSONPlaceholder para mockar inicialmente suas informações.
