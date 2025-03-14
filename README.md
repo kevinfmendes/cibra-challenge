@@ -28,13 +28,13 @@ Modo Dark
 🚀 Tecnologias utilizadas
 O projeto foi desenvolvido utilizando as seguintes tecnologias:
 
-Next.js
-TypeScript
-React Hook Form
-Tailwind CSS
-Radix UI
-Axios
-Yarn
+- Next.js
+- TypeScript
+- React Hook Form
+- Tailwind CSS
+- Radix UI
+- Axios
+- Yarn
 
 🔧 Instalação e execução
 Para executar o projeto localmente, siga os passos abaixo:
