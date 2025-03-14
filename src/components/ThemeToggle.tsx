@@ -1,11 +1,10 @@
-'use client'; // Marque como componente do lado do cliente
+'use client';
 
 import { useEffect, useState } from 'react';
 
 const ThemeToggle = () => {
   const [darkMode, setDarkMode] = useState(false);
 
-  // Verifica o tema salvo no localStorage ao carregar o componente
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -18,7 +17,6 @@ const ThemeToggle = () => {
     }
   }, []);
 
-  // Alterna entre os modos claro e escuro
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);

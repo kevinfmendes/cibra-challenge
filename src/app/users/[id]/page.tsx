@@ -1,21 +1,17 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { User } from '@/types/User';
 import { useUsers } from '@/hooks/useUsers';
-import LoadingSpinner from '@/components/LoadingSpinner';
-import UserNotFound from '@/components/UserNotFound';
-import BackButton from '@/components/BackButton';
-import UserAvatar from '@/components/UserAvatar';
-import UserHeader from '@/components/UserHeader';
-import UserDetailsLayout from '@/components/UserDetailsLayout';
-import UserDetailsCard from '@/components/UserDetailsCard';
-import UserDetailsGrid from '@/components/UserDetailsGrid';
-import UserInfoSection from '@/components/UserInfoSection';
-import UserInfoItem from '@/components/UserInfoItem';
-import Toast from '@/components/Toast';
+import LoadingSpinner from '@/components/common/Feedback/LoadingSpinner';
+import UserNotFound from '@/components/users/UserList/UserNotFound';
+import BackButton from '@/components/common/Button/BackButton';
+import {UserAvatar, UserHeader} from '@/components/users/UserProfile';
+import {UserDetailsLayout, UserDetailsCard, UserDetailsGrid} from '@/components/users/UserDetails';
+import {UserInfoSection, UserInfoItem} from '@/components/users/UserProfile';
+import Toast from '@/components/common/Feedback/Toast';
 
 export default function UserDetailsPage() {
   const [editedUser, setEditedUser] = useState<User | null>(null);
@@ -23,7 +19,6 @@ export default function UserDetailsPage() {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
-  const router = useRouter();
   const params = useParams();
   const userId = params?.id ? parseInt(params.id as string, 10) : null;
 
@@ -34,8 +29,8 @@ export default function UserDetailsPage() {
 
   useEffect(() => {
     if (user) {
-      setEditedUser(JSON.parse(JSON.stringify(user))); // Deep copy do usuário para edição
-      reset(user); // Preenche os valores do formulário com os dados do usuário
+      setEditedUser(JSON.parse(JSON.stringify(user)));
+      reset(user);
     }
   }, [user, reset]);
 
@@ -45,7 +40,7 @@ export default function UserDetailsPage() {
 
   const handleCancelEdit = () => {
     if (user) {
-      reset(user); // Restaura os valores originais
+      reset(user);
     }
     setIsEditing(false);
   };
@@ -55,7 +50,7 @@ export default function UserDetailsPage() {
 
     try {
       const updatedUser = { ...editedUser, ...data };
-      updateUser(updatedUser); // Usa a função updateUser do hook
+      updateUser(updatedUser);
       setIsEditing(false);
       setToastMessage('Usuário atualizado com sucesso!');
       setShowToast(true);
@@ -89,7 +84,7 @@ export default function UserDetailsPage() {
         </div>
 
         {isEditing ? (
-          <form onSubmit={handleSubmit(handleSaveEdit)} className="space-y-4">
+          <form onSubmit={handleSubmit(handleSaveEdit)} className="space-y-4 text-black">
             <UserDetailsGrid>
               <UserInfoSection title="Informações de Contato">
                 <UserInfoItem
@@ -100,6 +95,7 @@ export default function UserDetailsPage() {
                   required
                   register={register}
                   errors={errors.name}
+                  maxlength={50}
                 />
                 <UserInfoItem
                   label="Nome de Usuário"
@@ -109,6 +105,7 @@ export default function UserDetailsPage() {
                   required
                   register={register}
                   errors={errors.username}
+                  maxlength={30}
                 />
                 <UserInfoItem
                   label="Email"
@@ -126,6 +123,7 @@ export default function UserDetailsPage() {
                   name="phone"
                   register={register}
                   errors={errors.phone}
+                  mask="phone" 
                 />
                 <UserInfoItem
                   label="Website"
@@ -134,9 +132,10 @@ export default function UserDetailsPage() {
                   name="website"
                   register={register}
                   errors={errors.website}
+                  maxlength={60}
                 />
               </UserInfoSection>
-
+              <div className='flex gap-9 flex-col'>
               <UserInfoSection title="Empresa">
                 <UserInfoItem
                   label="Nome da Empresa"
@@ -145,6 +144,7 @@ export default function UserDetailsPage() {
                   name="company.name"
                   register={register}
                   errors={errors.company?.name}
+                  maxlength={30}
                 />
                 <UserInfoItem
                   label="Slogan"
@@ -153,6 +153,7 @@ export default function UserDetailsPage() {
                   name="company.catchPhrase"
                   register={register}
                   errors={errors.company?.catchPhrase}
+                  maxlength={60}
                 />
               </UserInfoSection>
 
@@ -164,14 +165,7 @@ export default function UserDetailsPage() {
                   name="address.street"
                   register={register}
                   errors={errors.address?.street}
-                />
-                <UserInfoItem
-                  label="Complemento"
-                  value={editedUser?.address?.suite ?? ''}
-                  isEditing={isEditing}
-                  name="address.suite"
-                  register={register}
-                  errors={errors.address?.suite}
+                  maxlength={50}
                 />
                 <div className="grid grid-cols-2 gap-3">
                   <UserInfoItem
@@ -181,6 +175,7 @@ export default function UserDetailsPage() {
                     name="address.city"
                     register={register}
                     errors={errors.address?.city}
+                    maxlength={50}
                   />
                   <UserInfoItem
                     label="CEP"
@@ -189,9 +184,15 @@ export default function UserDetailsPage() {
                     name="address.zipcode"
                     register={register}
                     errors={errors.address?.zipcode}
+                    mask="cep"
+                    onCepFetch={(address) => {
+                      setValue('address.street', address.logradouro);
+                      setValue('address.city', address.localidade);
+                    }}
                   />
                 </div>
               </UserInfoSection>
+              </div>
             </UserDetailsGrid>
 
             <div className="flex justify-end space-x-3 mt-6">
@@ -252,7 +253,7 @@ export default function UserDetailsPage() {
                 isEditing={false}
               />
             </UserInfoSection>
-
+            <div className='flex gap-3 flex-col'>
             <UserInfoSection title="Empresa">
               <UserInfoItem
                 label="Nome da Empresa"
@@ -265,31 +266,31 @@ export default function UserDetailsPage() {
                 isEditing={false}
               />
             </UserInfoSection>
-
-            <UserInfoSection title="Endereço">
-              <UserInfoItem
-                label="Rua"
-                value={user.address?.street || 'Não informado'}
-                isEditing={false}
-              />
-              <UserInfoItem
-                label="Complemento"
-                value={user.address?.suite || 'Não informado'}
-                isEditing={false}
-              />
-              <div className="grid grid-cols-2 gap-3">
+              <UserInfoSection title="Endereço">
                 <UserInfoItem
-                  label="Cidade"
-                  value={user.address?.city || 'Não informado'}
+                  label="Rua"
+                  value={user.address?.street || 'Não informado'}
                   isEditing={false}
                 />
                 <UserInfoItem
-                  label="CEP"
-                  value={user.address?.zipcode || 'Não informado'}
+                  label="Complemento"
+                  value={user.address?.suite || 'Não informado'}
                   isEditing={false}
                 />
-              </div>
-            </UserInfoSection>
+                <div className="grid grid-cols-2 gap-3">
+                  <UserInfoItem
+                    label="Cidade"
+                    value={user.address?.city || 'Não informado'}
+                    isEditing={false}
+                  />
+                  <UserInfoItem
+                    label="CEP"
+                    value={user.address?.zipcode || 'Não informado'}
+                    isEditing={false}
+                  />
+                </div>
+              </UserInfoSection>
+            </div>
           </UserDetailsGrid>
         )}
       </UserDetailsCard>

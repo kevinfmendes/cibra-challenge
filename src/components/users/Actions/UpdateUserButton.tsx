@@ -11,12 +11,12 @@ interface UpdateUserButtonProps {
 
 const UpdateUserButton: React.FC<UpdateUserButtonProps> = ({ user, onUpdateUser }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [isEditing, setIsEditing] = useState(false); // Estado para controlar a edição
+    const [isEditing, setIsEditing] = useState(false);
   
     const handleUpdateUser = (updatedUser: User) => {
         onUpdateUser(updatedUser);
         setIsOpen(false);
-      };
+    };
   
       return (
         <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>

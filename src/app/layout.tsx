@@ -20,7 +20,8 @@ export default function RootLayout({
       <body className={`${inter.className} bg-gray-50 dark:bg-gray-900 min-h-screen`}>
         <header className="bg-white dark:bg-gray-800 shadow-sm">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <h1 className="text-xl font-bold text-blue-600 dark:text-blue-400">Cibra Users</h1>
+            <h1 className="text-xl font-bold text-blue-600 dark:text-blue-400">
+              Cibra FrontEnd Test</h1>
             <ThemeToggle />
           </div>
         </header>

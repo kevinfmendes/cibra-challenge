@@ -1,4 +1,4 @@
-import InputFormDetails from './InputFormDetails';
+import InputFormDetails from '../../common/Form/InputFormDetails';
 import { UseFormRegister, FieldError } from 'react-hook-form';
 
 interface UserInfoItemProps {
@@ -8,8 +8,17 @@ interface UserInfoItemProps {
   onChange?: (value: string) => void;
   name?: string;
   required?: boolean;
-  register?: UseFormRegister<any>; // Adicionando suporte para register
-  errors?: FieldError; // Adicionando suporte para errors
+  register?: UseFormRegister<any>;
+  errors?: FieldError;
+  mask?: 'cep' | 'phone';
+  onCepFetch?: (address: {
+    logradouro: string;
+    bairro: string;
+    localidade: string;
+    uf: string;
+    complemento: string;
+  }) => void;
+  maxlength?: number;
 }
 
 const UserInfoItem: React.FC<UserInfoItemProps> = ({ 
@@ -20,12 +29,20 @@ const UserInfoItem: React.FC<UserInfoItemProps> = ({
   name,
   required = false,
   register,
-  errors
+  errors,
+  mask,
+  onCepFetch,
+  maxlength
 }) => {
-  // Para lidar com valores React.ReactNode (como links)
   const displayValue = typeof value === 'string' ? value : '';
   const fieldId = name || label.toLowerCase().replace(/\s+/g, '_');
   
+  const handleChange = (value: string) => {
+    if (onChange) {
+      onChange(value); // Chamar a função onChange personalizada
+    }
+  };
+
   return (
     <div>
       {isEditing ? (
@@ -33,10 +50,13 @@ const UserInfoItem: React.FC<UserInfoItemProps> = ({
           id={fieldId}
           label={label}
           value={displayValue}
-          onChange={(value) => onChange && onChange(value)}
+          onChange={handleChange}
           required={required}
-          register={register} // Passando register para InputFormDetails
-          errors={errors} // Passando errors para InputFormDetails
+          register={register}
+          errors={errors}
+          mask={mask}
+          onCepFetch={onCepFetch}
+          maxlength={maxlength}
         />
       ) : (
         <>

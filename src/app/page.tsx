@@ -1,9 +1,9 @@
 'use client';
 import { useUsers } from '@/hooks/useUsers';
-import UserList from '@/components/UserList';
-import SearchBar from '@/components/SearchBar';
-import AddUserForm from '@/components/AddUserForm';
-import HeaderSection from '@/components/HeaderSection';
+import UserList from '@/components/users/UserList/UserList';
+import SearchBar from '@/components/common/Search/SearchBar';
+import AddUserForm from '@/components/users/Actions/AddUserForm';
+import HeaderSection from '@/components/common/Layout/HeaderSection';
 
 export default function Home() {
   const { users, loading, addUser, deleteUser, updateUser, searchTerm, setSearchTerm } = useUsers();

@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface UserDetailsGridProps {
   children: React.ReactNode;
 }

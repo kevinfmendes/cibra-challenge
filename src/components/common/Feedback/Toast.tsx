@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import * as RadixToast from '@radix-ui/react-toast';
 
 interface ToastProps {

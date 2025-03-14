@@ -1,5 +1,5 @@
-import AddUserForm from '@/components/AddUserForm';
-import UserNotFound from '@/components/UserNotFound';
+import AddUserForm from '@/components/users/Actions/AddUserForm';
+import UserNotFound from '@/components/users/UserList/UserNotFound';
 import { useUsers } from '@/hooks/useUsers';
 import { useRouter } from 'next/router';
 

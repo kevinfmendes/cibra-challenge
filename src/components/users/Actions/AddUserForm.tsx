@@ -1,19 +1,21 @@
-// components/AddUserForm.tsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { RxAvatar } from "react-icons/rx";
 import { useForm } from 'react-hook-form';
 import * as Dialog from '@radix-ui/react-dialog';
 import { User } from '@/types/User';
-import Toast from './Toast';
-import InputForm from './InputForm';
+import Toast from '../../common/Feedback/Toast';
+import InputForm from '../../common/Form/InputForm';
+import AddUserButton from './AddUserButton';
+import { fetchAddressByCep } from '@/services/api';
 
 interface AddUserFormProps {
   onAddUser?: (user: Omit<User, 'id'>) => void;
   onEditUser?: (user: User) => void;
   user?: User;
   onCancel?: () => void;
-  isEditing?: boolean; // Propriedade para indicar se está editando
-  isOpen?: boolean; // Propriedade para controlar o estado do Dialog
-  onOpenChange?: (open: boolean) => void; 
+  isEditing?: boolean;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 type FormData = {
@@ -34,9 +36,12 @@ const AddUserForm: React.FC<AddUserFormProps> = ({ onAddUser, onEditUser, onCanc
   const open = isOpen !== undefined ? isOpen : internalOpen;
   const setOpen = onOpenChange || setInternalOpen;                                                    
   const [showToast, setShowToast] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [showErrorToast, setShowErrorToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState(''); 
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   
-  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<FormData>();
+  const { register, handleSubmit, formState: { errors }, reset, setValue, control } = useForm<FormData>();
 
   useEffect(() => {
     if (user) {
@@ -62,6 +67,28 @@ const AddUserForm: React.FC<AddUserFormProps> = ({ onAddUser, onEditUser, onCanc
       reader.readAsDataURL(file);
     }
   };
+
+  async function handleCepChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const cep = e.target.value.replace(/\D/g, "");
+    
+    if (cep.length === 8) {
+      try {
+        const address = await fetchAddressByCep(cep);
+      
+        if (address && address.logradouro) {
+          setValue("street", address.logradouro);
+          setValue("city", address.localidade);
+        } else {
+          setToastMessage('CEP não encontrado.');
+          setShowErrorToast(true);
+        }
+      } catch (error) {
+        console.log("Erro ao buscar endereço:", error);
+        setToastMessage('Erro ao buscar o CEP. Tente novamente.');
+        setShowErrorToast(true); 
+      }
+    }
+  }
 
   const onSubmit = (data: FormData) => {
     const newUser: Omit<User, 'id'> = {
@@ -97,29 +124,15 @@ const AddUserForm: React.FC<AddUserFormProps> = ({ onAddUser, onEditUser, onCanc
     setAvatarPreview(null);
   };
 
-   // Renderiza apenas o conteúdo do formulário quando estiver no modo de edição
    const renderFormContent = () => (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-black">
       <div className="mb-6 flex flex-col items-center dark:bg-gray-800">
         <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 mb-3">
           {avatarPreview ? (
             <img src={avatarPreview} alt="Preview" className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-500 dark:text-gray-400">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-12 w-12"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
+              <RxAvatar className="w-full h-full"/>
             </div>
           )}
         </div>
@@ -161,11 +174,16 @@ const AddUserForm: React.FC<AddUserFormProps> = ({ onAddUser, onEditUser, onCanc
         id="phone"
         label="Telefone"
         register={register}
+        control={control}
+        mask="phone"
       />
       <InputForm
         id="zipcode"
         label="Cep"
         register={register}
+        control={control}
+        mask="cep"
+        onChange={handleCepChange}
       />
       <InputForm
         id="street"
@@ -199,12 +217,10 @@ const AddUserForm: React.FC<AddUserFormProps> = ({ onAddUser, onEditUser, onCanc
     </form>
   );
 
-  // Se estiver no modo de edição, renderiza apenas o conteúdo do formulário
   if (isEditing) {
     return (
       <>
         {renderFormContent()}
-        
         <Toast 
           open={showToast} 
           setOpen={setShowToast} 
@@ -217,27 +233,11 @@ const AddUserForm: React.FC<AddUserFormProps> = ({ onAddUser, onEditUser, onCanc
     );
   }
 
-  // Caso contrário, renderiza o Dialog com o botão de adicionar
   return (
     <>
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Trigger asChild>
-          <button className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-7 w-7"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          </button>
+            <AddUserButton />
         </Dialog.Trigger>
 
         <Dialog.Portal>
@@ -248,18 +248,26 @@ const AddUserForm: React.FC<AddUserFormProps> = ({ onAddUser, onEditUser, onCanc
             <Dialog.Title className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
               {user ? 'Editar Usuário' : 'Adicionar Novo Usuário'}
             </Dialog.Title>
-
             {renderFormContent()}
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
 
       <Toast 
-        open={showToast} 
-        setOpen={setShowToast} 
+        open={showSuccessToast}
+        setOpen={setShowSuccessToast}
         title="Sucesso!" 
         description={user ? "Usuário atualizado com sucesso." : "Usuário adicionado com sucesso."}
         type="success"
+        duration={3000}
+      />
+
+      <Toast
+        open={showErrorToast}
+        setOpen={setShowErrorToast}
+        title="Cep incorreto!"
+        description={toastMessage}
+        type="error"
         duration={3000}
       />
     </>

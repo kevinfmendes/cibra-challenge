@@ -1,9 +1,9 @@
-import React from 'react';
 import Link from 'next/link';
 import * as Avatar from '@radix-ui/react-avatar';
 import { User } from '@/types/User';
-import DeleteUserButton from './DeleteUserButton';
-import UpdateUserButton from './UpdateUserButton';
+import DeleteUserButton from '../Actions/DeleteUserButton';
+import UpdateUserButton from '../Actions/UpdateUserButton';
+import { FiArrowRight } from 'react-icons/fi';
 
 interface UserCardProps {
   user: User;
@@ -29,32 +29,19 @@ const UserCard: React.FC<UserCardProps> = ({ user, onDelete, onUpdateUser }) => 
             </Avatar.Fallback>
           </Avatar.Root>
           <div className='flex gap-2'>
-
-          <UpdateUserButton user={user} onUpdateUser={onUpdateUser} />
-
-          <DeleteUserButton onDelete={() => onDelete(user.id)} />
+            <UpdateUserButton user={user} onUpdateUser={onUpdateUser} />
+            <DeleteUserButton onDelete={() => onDelete(user.id)} />
           </div>
         </div>
-        
+
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-1 truncate">{user.name}</h3>
         <p className="text-sm text-gray-600 dark:text-gray-300  mb-1">@{user.username}</p>
         <p className="text-sm text-gray-600 dark:text-gray-300  mb-3">{user.email}</p>
-        
+
         <Link href={`/users/${user.id}`} className="inline-flex items-center
          text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 ">
-          Ver detalhes
-          <svg
-            className="ml-1 w-4 h-4"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-              clipRule="evenodd"
-            />
-          </svg>
+            Ver detalhes
+          <FiArrowRight className="ml-1 w-4 h-4" />
         </Link>
       </div>
     </div>
