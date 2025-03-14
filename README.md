@@ -18,7 +18,7 @@ Suas principais funcionalidades incluem:
 - Integração viaCep para buscar informações de Endereço
 - Modo Dark
 
-✏️Considerações:
+✏️  Considerações:
 - Além dos requisitos necessários informados na descrição do teste, tomei a liberdade de adicionar esquema de edição dos registros de usuários e adicionei integração com viaCep para busca de dados de endereço com confirmação visual da resposta da api consumida através do Toast configurado;
 - Optei por utilizar as preferências previamente definidas no navegador/sistema usado para definir o uso do modo dark/light na aplicação;
 - Como o gerenciamento dos registros deve ser realizado diretamente através do localStorage para evitar perca de dados, a perfomance pode ser comprometida por não ser a melhor forma de trafegar dados;
@@ -36,21 +36,22 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias:
 - Axios
 - Yarn
 
-🔧 Instalação e execução
+## Instalação e execução
 Para executar o projeto localmente, siga os passos abaixo:
-bashCopiar# Clone este repositório
+
+### Clone este repositório
 git clone https://github.com/seu-usuario/cibra-challenge.git
 
-# Acesse a pasta do projeto
+### Acesse a pasta do projeto
 cd cibra-challenge
 
-# Instale as dependências
+### Instale as dependências
 yarn install
 
-# Execute a aplicação em modo de desenvolvimento
+### Execute a aplicação em modo de desenvolvimento
 yarn dev
 
-# A aplicação será aberta na porta 5173 - acesse http://localhost:5173
+### A aplicação será aberta na porta 5173 - acesse http://localhost:5173
 📝 Estrutura do projeto
 
 src/app: Páginas da aplicação
